@@ -1,7 +1,6 @@
 use std::fs;
 use std::io::{self, Read, Write};
 
-
 pub fn write_to_file(file_name: &str) -> io::Result<()> {
     let mut stored_number: i32 = 0;
 

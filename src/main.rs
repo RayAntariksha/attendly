@@ -1,5 +1,5 @@
-mod write;
 mod timelogic;
+mod write;
 
 const FILE_NAME: &str = "data.txt";
 const OPENING_TIME: i32 = 11;
@@ -11,10 +11,8 @@ fn main() {
 
 fn logic() {
     let command = timelogic::school_time(OPENING_TIME, CLOSING_TIME);
-    if command == true{
+    if command == true {
         #[allow(unused_must_use)]
-     write::write_to_file(FILE_NAME);
+        write::write_to_file(FILE_NAME);
     }
-    
 }
-
