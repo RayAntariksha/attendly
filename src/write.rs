@@ -1,31 +1,39 @@
+use crate::timelogic;
+use std::fs::OpenOptions;
 use std::fs;
 use std::io::{self, Read, Write};
 
 pub fn write_to_file(file_name: &str) -> io::Result<()> {
-    let mut stored_number: i32 = 0;
+    let file = OpenOptions::new()
+        .read(true)
+        .write(true)
+        .create(true)
+        .open(file_name);
 
-    // Try to read the number from the file
-    if let Ok(mut file) = fs::File::open("data.txt") {
-        let mut contents = String::new();
-        file.read_to_string(&mut contents)?;
-        if let Ok(num) = contents.trim().parse::<i32>() {
-            stored_number = num;
-            println!("Loaded number: {}", stored_number);
-        } else {
-            eprintln!("Error: Could not parse number from file.");
-        }
-    } else {
-        println!("File not found. Starting with default number.");
+    let mut content = String::new();
+    file?.read_to_string(&mut content)?;
+    let content: &str = content.trim();
+
+    let parts: Vec<&str> = content.split(',').collect();
+    let num: i32 = parts[0]
+        .parse()
+        .expect("failed to convert date to a integer");
+
+    if attendance(content) == true {
+        let entry = format!("{},{}", num+1, timelogic::date());
+        fs::write(file_name, entry)?;
     }
 
-    // Modify the number (for demonstration)
-    stored_number += 1;
-    println!("New number: {}", stored_number);
-
-    // Save the updated number back to the file
-    let mut file = fs::File::create(file_name)?;
-    file.write_all(stored_number.to_string().as_bytes())?;
-    println!("Number saved to file.");
-
     Ok(())
+}
+fn attendance(content: &str) -> bool {
+    let parts: Vec<&str> = content.split(',').collect();
+    let date: i32 = parts[1]
+        .parse()
+        .expect("failed to convert date to a integer");
+    if date == timelogic::date() {
+        return false;
+    } else {
+        return true;
+    }
 }

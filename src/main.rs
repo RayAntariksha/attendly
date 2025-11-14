@@ -2,8 +2,8 @@ mod timelogic;
 mod write;
 
 const FILE_NAME: &str = "data.txt";
-const OPENING_TIME: i32 = 11;
-const CLOSING_TIME: i32 = 17;
+const OPENING_TIME: i32 = 0;
+const CLOSING_TIME: i32 = 170;
 fn main() {
     logic();
     println!("Program Finished!");
