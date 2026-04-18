@@ -1,39 +1,24 @@
-use crate::timelogic;
-use std::fs::OpenOptions;
+//Libraries
 use std::fs;
-use std::io::{self, Read, Write};
+use std::path::Path;
 
-pub fn write_to_file(file_name: &str) -> io::Result<()> {
-    let file = OpenOptions::new()
-        .read(true)
-        .write(true)
-        .create(true)
-        .open(file_name);
-
-    let mut content = String::new();
-    file?.read_to_string(&mut content)?;
-    let content: &str = content.trim();
-
-    let parts: Vec<&str> = content.split(',').collect();
-    let num: i32 = parts[0]
-        .parse()
-        .expect("failed to convert date to a integer");
-
-    if attendance(content) == true {
-        let entry = format!("{},{}", num+1, timelogic::date());
-        fs::write(file_name, entry)?;
+const FILE_NAME: &str = "data.txt";
+pub fn init_file(){
+    let file_path = Path::new(FILE_NAME);
+    if !file_path.exists() {
+        let _ = fs::write(FILE_NAME, "0,0");
     }
-
-    Ok(())
 }
-fn attendance(content: &str) -> bool {
-    let parts: Vec<&str> = content.split(',').collect();
-    let date: i32 = parts[1]
-        .parse()
-        .expect("failed to convert date to a integer");
-    if date == timelogic::date() {
-        return false;
-    } else {
-        return true;
+
+pub fn add_attendance() {
+    let file_contents = fs::read_to_string(FILE_NAME).unwrap();
+    let data : Vec<_> = file_contents.split(',').collect();
+    let data: Vec<i32> = data
+        .into_iter()
+        .map(|a| a.parse::<i32>().unwrap())
+        .collect();
+    if data[0] != crate::timelogic::date() {
+        let a = format!("{},{}", crate::timelogic::date(), data[1] + 1);
+        let _ = fs::write(FILE_NAME, a);
     }
 }

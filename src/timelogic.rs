@@ -15,6 +15,5 @@ pub fn school_time(opening_time: i32, closing_time: i32) -> bool {
 pub fn date() -> i32 {
     let utc = Utc::now();
     let ist = utc.with_timezone(&Kolkata).format("%d").to_string();
-    let ist: i32 = ist.trim().parse().expect("Failed to parse time as i32");
-    ist
+    ist.trim().parse::<i32>().unwrap()
 }
